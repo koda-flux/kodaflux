@@ -10,6 +10,7 @@ dev = ["ruff>=0.15.5"]
 
 [tool.uv.sources]
 backend = { workspace = true }
+agent = { workspace = true }
 
 [tool.uv.workspace]
 members = ["packages/*"]
