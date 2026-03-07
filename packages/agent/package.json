@@ -3,6 +3,10 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
+    "dev": "gradient agent run",
+    "test": "pytest",
+    "lint": "ruff check",
+    "lint:fix": "ruff check --fix",
     "install": "uv sync"
   }
 }
