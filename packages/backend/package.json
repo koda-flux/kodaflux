@@ -1,0 +1,12 @@
+{
+	"name": "backend",
+	"version": "0.0.0",
+	"private": true,
+	"scripts": {
+		"dev": "fastapi dev app/main.py",
+		"test": "pytest",
+		"lint": "ruff check",
+		"lint:fix": "ruff check --fix",
+		"install": "uv sync"
+	}
+}

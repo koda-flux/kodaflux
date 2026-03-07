@@ -1,0 +1,30 @@
+{
+	"name": "kodaflux",
+	"version": "0.0.0",
+	"private": true,
+	"license": "AGPL-3.0",
+	"scripts": {
+		"dev": "turbo dev",
+		"build": "turbo build",
+		"test": "turbo test",
+		"lint": "turbo lint",
+		"lint:fix": "turbo lint:fix",
+		"prepare": "husky"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "^2.4.6",
+		"@repo/biome": "workspace:*",
+		"@testing-library/jest-dom": "catalog:",
+		"@testing-library/react": "catalog:",
+		"@types/node": "^20.19.37",
+		"@vitest/coverage-istanbul": "catalog:",
+		"@vitest/ui": "^4.0.18",
+		"dotenv-cli": "^11.0.0",
+		"husky": "^9.1.7",
+		"lint-staged": "^16.3.2",
+		"turbo": "^2.8.14",
+		"typescript": "catalog:",
+		"vitest": "catalog:"
+	},
+	"packageManager": "pnpm@10.28.0"
+}

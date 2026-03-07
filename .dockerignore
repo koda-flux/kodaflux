@@ -1,0 +1,17 @@
+# Ingore everything
+**/*
+
+# Code and tools needed in containers
+!packages/**
+!tools/**
+!package.json
+!turbo.json
+!pnpm-lock.yaml
+!pnpm-workspace.yaml
+
+# Re-ignore unwanted files within tools & packages
+**/.env*
+**/node_modules/
+**/.next/
+**/*.egg-info
+**/__pycache__/

@@ -1,0 +1,16 @@
+[project]
+name = "kodaflux"
+version = "0.0.0"
+requires-python = ">=3.12"
+readme = "README.md"
+dependencies = []
+
+[dependency-groups]
+dev = ["ruff>=0.15.5"]
+
+[tool.uv.sources]
+backend = { workspace = true }
+
+[tool.uv.workspace]
+members = ["packages/*"]
+exclude = ["packages/frontend"]
