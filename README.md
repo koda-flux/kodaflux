@@ -7,6 +7,8 @@ A simple AI powered documentation aggregator.
 </div>
 
 > :warning: This project is currently under active development and will experience breaking changes often.
+>
+> You can have a look what what is being worked on & the general plan in the [GitHub Project](https://github.com/orgs/koda-flux/projects/1)
 
 # Development Setup
 
