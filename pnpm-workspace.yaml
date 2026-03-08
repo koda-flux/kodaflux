@@ -1,12 +1,12 @@
 packages:
-  - infrastructure/*
+  - infrastructure
   - packages/*
   - tools/*
 
 catalog:
-  '@testing-library/jest-dom': ^6.9.1
-  '@testing-library/react': ^16.3.2
-  '@vitest/coverage-istanbul': ^4.0.18
+  "@testing-library/jest-dom": ^6.9.1
+  "@testing-library/react": ^16.3.2
+  "@vitest/coverage-istanbul": ^4.0.18
   typescript: ^5.9.3
   vitest: ^4.0.18
 
