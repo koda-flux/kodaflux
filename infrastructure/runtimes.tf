@@ -1,6 +1,4 @@
 resource "digitalocean_app" "kodaflux_app" {
-  project_id = digitalocean_project.project.id
-
   spec {
     name   = "kodaflux"
     region = var.region
