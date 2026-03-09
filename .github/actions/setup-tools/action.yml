@@ -5,15 +5,23 @@ inputs:
   node-version:
     description: Version Node used in this project
     default: lts/*
+    required: false
+  turbo-version:
+    description: Version on Turborepo used in this project
+    default: "2.8"
+    required: false
   uv-version:
     description: Version of UV used in this project
     default: 0.10.6
+    required: false
   python-version:
     description: Version of Python used in this project
     default: "3.12"
+    required: false
   tflint-version:
     description: Version of TFLint used in this project (Prefix with v)
     default: 0.61.0
+    required: false
 
 runs:
   using: composite
@@ -28,6 +36,10 @@ runs:
       with:
         node-version: ${{ inputs.node_version }}
         cache: "pnpm"
+
+    - name: Install Turborepo
+      shell: bash
+      run: npm install --global turbo@${{ inputs.turbo-version }}
 
     - name: Setup UV
       uses: astral-sh/setup-uv@v7
