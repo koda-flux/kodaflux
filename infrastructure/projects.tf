@@ -3,5 +3,11 @@ resource "digitalocean_project" "project" {
   description = "Documentation aggregator project"
   purpose     = "Web Application"
   environment = var.environment
-  resources   = []
+  resources = [
+    digitalocean_vpc.main.urn,
+    digitalocean_database_firewall.database_firewall.urn,
+    digitalocean_app.kodaflux_app.urn,
+    digitalocean_spaces_bucket.assets.urn,
+    digitalocean_database_cluster.postgres.urn
+  ]
 }
