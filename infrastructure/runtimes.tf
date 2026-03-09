@@ -40,10 +40,6 @@ resource "digitalocean_app" "kodaflux_app" {
 
       build_command = "pnpm install --frozen-lockfile && pnpm run build"
       output_dir    = "packages/frontend/out"
-
-      env {
-        # Add NEXT_PUBLIC_* variables
-      }
     }
   }
 }
