@@ -29,7 +29,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - uses: ./.github/actions/setup-tools
 
       - name: Run tests
         run: echo "Tests to be implemented once the hackathon submission is done. No new features."
