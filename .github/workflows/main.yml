@@ -18,7 +18,9 @@ jobs:
       - uses: ./.github/actions/setup-tools
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: |
+          pnpm install --frozen-lockfile
+          uv sync
 
       - name: Run project-wide linters
         run: turbo run lint
