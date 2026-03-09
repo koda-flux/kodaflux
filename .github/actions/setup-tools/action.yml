@@ -20,7 +20,7 @@ inputs:
     required: false
   tflint-version:
     description: Version of TFLint used in this project (Prefix with v)
-    default: 0.61.0
+    default: latest
     required: false
 
 runs:
