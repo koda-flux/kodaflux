@@ -9,7 +9,7 @@
 		"test": "turbo test",
 		"lint": "turbo lint",
 		"lint:fix": "turbo lint:fix",
-		"prepare": "husky"
+		"prepare": "husky && uv sync"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^2.4.6",
