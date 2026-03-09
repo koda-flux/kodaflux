@@ -1,0 +1,75 @@
+name: KodaFlux CI/CD Workflow
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: ./.github/actions/setup-tools
+
+      - name: Install dependencies
+        run: |
+          pnpm install --frozen-lockfile
+          uv sync
+
+      - name: Run project-wide linters
+        run: turbo run lint
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Run tests
+        run: echo "Tests to be implemented once the hackathon submission is done. No new features."
+
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      backend: ${{ steps.filter.outputs.backend }}
+      frontend: ${{ steps.filter.outputs.frontend }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            backend:
+              - 'packages/backend/**'
+            frontend:
+              - 'packages/frontend/**'
+
+  build-and-push:
+    needs: [lint, test, changes]
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+    strategy:
+      fail-fast: true
+      matrix:
+        include:
+          - app-name: frontend
+            should-build: ${{ needs.changes.outputs.frontend == 'true' }}
+            dockerfile: ./packages/frontend/Dockerfile
+          - app-name: backend
+            should-build: ${{ needs.changes.outputs.backend == 'true' }}
+            dockerfile: ./packages/backend/Dockerfile
+    steps:
+      - uses: actions/checkout@v6
+      - uses: ./.github/actions/build-docker-images
+        if: ${{ matrix.should-build && github.event_name == 'push' && github.ref_name == 'main' }}
+        with:
+          actor: ${{ github.actor }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          app-name: ${{ matrix.app-name }}
+          dockerfile-path: ${{ matrix.dockerfile }}

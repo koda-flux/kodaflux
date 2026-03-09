@@ -39,7 +39,7 @@ variable "container_registry" {
 variable "container_repository_name" {
   type        = string
   description = "The name of the repository where images live"
-  default     = "koda-flux"
+  default     = "kodaflux"
 }
 
 variable "backend_image_name" {

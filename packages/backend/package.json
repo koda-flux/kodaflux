@@ -5,8 +5,8 @@
 	"scripts": {
 		"dev": "fastapi dev app/main.py",
 		"test": "pytest",
-		"lint": "ruff check",
-		"lint:fix": "ruff check --fix",
+		"lint": "uv run ruff check",
+		"lint:fix": "uv run ruff check --fix",
 		"install": "uv sync"
 	}
 }

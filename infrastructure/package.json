@@ -6,7 +6,7 @@
     "init": "terraform init",
     "plan": "terraform plan",
     "apply": "terraform apply",
-    "lint": "tflint --minimum-failure-severity=error",
-    "lint:fix": "tflint --minimum-failure-severity=error --fix && terraform fmt"
+    "lint": "tflint --init && tflint --minimum-failure-severity=error -f compact",
+    "lint:fix": "tflint --init && tflint --minimum-failure-severity=error --fix && terraform fmt"
   }
 }
