@@ -105,3 +105,8 @@ jobs:
                 body: output
               })
             }
+
+      - name: Terraform Apply
+        if: ${{ github.event_name == 'push' }}
+        id: apply
+        run: terraform apply -auto-approve -input=false
