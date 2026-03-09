@@ -1,0 +1,12 @@
+{
+  "name": "@repo/infrastructure",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "init": "terraform init",
+    "plan": "terraform plan",
+    "apply": "terraform apply",
+    "lint": "tflint --minimum-failure-severity=error",
+    "lint:fix": "tflint --minimum-failure-severity=error --fix && terraform fmt"
+  }
+}

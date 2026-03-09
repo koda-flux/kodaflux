@@ -14,18 +14,20 @@ A simple AI powered documentation aggregator.
 
 ## Prerequisites
 
-- Nodejs (v20.9+)
-- PNPM (v10.28.0)
-- Python (v3.12+)
-- UV (latest stable version)
-- Docker & Docker compose (latest stable versions)
+- [Nodejs](https://nodejs.org) (v20.9+)
+- [PNPM](https://pnpm.io) (v10.28.0)
+- [Python](https://python.org) (v3.12+)
+- [UV](https://docs.astral.sh/uv) (latest stable version)
+- [Docker & Docker compose](https://docker.com) (latest stable versions)
+- [Terraform](https://developer.hashicorp.com/terraform) (latest stable version)
+- [TFLint](https://github.com/terraform-linters/tflint) (latest stable version)
 
 ## Running the project
 
 1. Clone the repo
 
 	```bash
-	git clone https://gitlab.com/kodaflux/kodaflux.git
+	git clone https://github.com/koda-flux/kodaflux.git
 
 	cd kodaflux
 	```
@@ -36,7 +38,7 @@ A simple AI powered documentation aggregator.
 	pnpm install
 	```
 
-	> :light_bulb: This will also run `uv sync` in the root of the backend which is written in Python (FastAPI)
+	> 💡 This will also run `uv sync` in the root of the backend which is written in Python (FastAPI)
 
 
 3. Create copies of all `.env` files and populate values as necessary.
@@ -46,8 +48,6 @@ A simple AI powered documentation aggregator.
 	```bash
 	docker compose -f compose.dev.yml up -d
 	```
-
-
 
 	```bash
 	pnpm turbo db:migrate

@@ -15,8 +15,9 @@ node_modules/
 !.env.example
 
 # Next.js build output
-.next
-out
+.next/
+out/
+dist/
 next-env.d.ts
 
 # Turborepo
