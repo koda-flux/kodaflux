@@ -53,3 +53,14 @@ variable "frontend_source_repo" {
   description = "The URL to the repo where the frontend source code lives"
   default     = "https://github.com/koda-flux/kodaflux.git"
 }
+
+variable "spaces_access_key_id" {
+  type        = string
+  description = "The access key id used to access Digitalocean Spaces"
+}
+
+variable "spaces_secret_access_key" {
+  type        = string
+  description = "The secret access key used to access DigitalOcean Spaces"
+}
+
