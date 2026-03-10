@@ -49,7 +49,7 @@ runs:
       id: meta
       uses: docker/metadata-action@v5
       with:
-        images: "${{ inputs.container-registry }}/${{ inputs.container_repository }}/kodaflux-${{ inputs.app-name }}"
+        images: "${{ inputs.container-registry }}/${{ inputs.container-repository }}/kodaflux-${{ inputs.app-name }}"
         tags: |
           type=raw,value=latest,enable={{is_default_branch}}
           type=sha,format=short
