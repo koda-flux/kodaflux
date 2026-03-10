@@ -24,13 +24,7 @@ variable "postgres_version" {
 variable "container_registry_type" {
   type        = string
   description = "The type of container registry where the images can be pulled"
-  default     = "DOCKER_HUB"
-}
-
-variable "container_registry" {
-  type        = string
-  description = "The name of the container registry where the images can be pulled"
-  default     = "ghcr.io"
+  default     = "DOCR"
 }
 
 # Ideally this is your GitHub username or the name of the
@@ -39,7 +33,7 @@ variable "container_registry" {
 variable "container_repository_name" {
   type        = string
   description = "The name of the repository where images live"
-  default     = "koda-flux"
+  default     = "kodaflux"
 }
 
 variable "backend_image_name" {
@@ -64,3 +58,13 @@ variable "spaces_secret_access_key" {
   description = "The secret access key used to access DigitalOcean Spaces"
 }
 
+variable "github_username" {
+  type        = string
+  description = "The acting user's github username"
+  default     = "0xlebogang"
+}
+
+variable "container_registry_pat" {
+  type        = string
+  description = "GitHub PAT to allow DigitalOcean to pull images from registry"
+}

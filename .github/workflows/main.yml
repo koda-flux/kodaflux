@@ -76,3 +76,5 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           app-name: ${{ matrix.app-name }}
           dockerfile-path: ${{ matrix.dockerfile }}
+          digitalocean-email: ${{ secrets.DO_REGISTERED_EMAIL }}
+          digitalocean-access-token: ${{ secrets.TF_VAR_DO_TOKEN }}
