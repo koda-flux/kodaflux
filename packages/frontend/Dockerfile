@@ -3,7 +3,9 @@ WORKDIR /app
 
 ARG TURBO_MAJOR_VERSION=^2
 
-COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/bin/uv
+ENV PATH="/usr/local/bin:${PATH}"
+
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
 RUN apk update \
 	&& apk add --no-cache libc6-compat \
 	&& npm install --global turbo@${TURBO_MAJOR_VERSION} \
