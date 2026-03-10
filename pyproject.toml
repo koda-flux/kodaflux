@@ -3,7 +3,7 @@ name = "kodaflux"
 version = "0.0.0"
 requires-python = ">=3.12"
 readme = "README.md"
-dependencies = []
+dependencies = ["agent", "backend"]
 
 [dependency-groups]
 dev = ["ruff>=0.15.5"]
@@ -13,5 +13,5 @@ backend = { workspace = true }
 agent = { workspace = true }
 
 [tool.uv.workspace]
-members = ["packages/*"]
+members = ["packages/agent", "packages/backend"]
 exclude = ["packages/frontend"]
