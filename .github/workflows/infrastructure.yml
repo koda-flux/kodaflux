@@ -109,6 +109,6 @@ jobs:
             }
 
       - name: Terraform Apply
-        if: ${{ github.event_name == 'push' }}
+        if: ${{ github.event_name == 'push' || github.event_name == 'workflow_dispatch' }}
         id: apply
         run: terraform apply -auto-approve -input=false
