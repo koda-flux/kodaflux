@@ -10,6 +10,7 @@ resource "digitalocean_app" "kodaflux_app" {
       name               = "backend"
       instance_count     = 1
       instance_size_slug = "apps-s-1vcpu-1gb"
+      http_port          = "80"
 
       image {
         registry_type = var.container_registry_type
@@ -19,6 +20,14 @@ resource "digitalocean_app" "kodaflux_app" {
         deploy_on_push {
           enabled = true # Makes system run on bleeding edge
         }
+      }
+
+      health_check {
+        http_path             = "/healthz"
+        initial_delay_seconds = 10
+        period_seconds        = 90
+        timeout_seconds       = 30
+        failure_threshold     = 5
       }
 
       env {
