@@ -38,7 +38,7 @@ resource "digitalocean_app" "kodaflux_app" {
         branch         = "main"
       }
 
-      build_command = "pnpm install --frozen-lockfile && pnpm run build"
+      build_command = "pnpm install --frozen-lockfile && pnpm run build --filter=frontend"
       output_dir    = "packages/frontend/out"
     }
 
