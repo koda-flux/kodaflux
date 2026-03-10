@@ -58,13 +58,3 @@ variable "spaces_secret_access_key" {
   description = "The secret access key used to access DigitalOcean Spaces"
 }
 
-variable "github_username" {
-  type        = string
-  description = "The acting user's github username"
-  default     = "0xlebogang"
-}
-
-variable "container_registry_pat" {
-  type        = string
-  description = "GitHub PAT to allow DigitalOcean to pull images from registry"
-}

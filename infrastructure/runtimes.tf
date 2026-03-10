@@ -12,10 +12,9 @@ resource "digitalocean_app" "kodaflux_app" {
       instance_size_slug = "apps-s-1vcpu-1gb"
 
       image {
-        registry_type        = var.container_registry_type
-        repository           = "${var.container_repository_name}/${var.backend_image_name}"
-        registry_credentials = "${var.github_username}/${var.container_registry_pat}"
-        tag                  = "latest"
+        registry_type = var.container_registry_type
+        repository    = "${var.container_repository_name}/${var.backend_image_name}"
+        tag           = "latest"
 
         deploy_on_push {
           enabled = true # Makes system run on bleeding edge
