@@ -4,7 +4,6 @@ resource "digitalocean_project" "project" {
   purpose     = "Web Application"
   environment = var.environment
   resources = [
-    digitalocean_vpc.main.urn,
     digitalocean_app.kodaflux_app.urn,
     digitalocean_spaces_bucket.assets.urn,
     digitalocean_database_cluster.postgres.urn
