@@ -17,10 +17,9 @@ jobs:
       - uses: actions/checkout@v6
       - uses: ./.github/actions/setup-tools
 
-      - name: Install dependencies
-        run: |
-          pnpm install --frozen-lockfile
-          uv sync
+      # Runs `uv sync` as part of "prepare" script
+      - name: PNPM Install
+        run: pnpm install --frozen-lockfile
 
       - name: Run project-wide linters
         run: turbo run lint
@@ -33,6 +32,7 @@ jobs:
       - name: Run tests
         run: echo "Tests to be implemented once the hackathon submission is done. No new features."
 
+  # Detects changes in app packages
   changes:
     runs-on: ubuntu-latest
     outputs:
@@ -48,7 +48,10 @@ jobs:
               - 'packages/backend/**'
             frontend:
               - 'packages/frontend/**'
+            agent:
+              - 'packages/agent/**'
 
+  # Builds and pushes docker images for frontend & backend packages
   build-and-push:
     needs: [lint, test, changes]
     runs-on: ubuntu-latest
