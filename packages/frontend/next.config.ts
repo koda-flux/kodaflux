@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-	output: "export",
+	output: process.env.DOCKER ? "standalone" : "export",
 	reactCompiler: true,
 };
 

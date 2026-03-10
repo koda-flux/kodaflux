@@ -19,7 +19,9 @@ jobs:
 
       # Runs `uv sync` as part of "prepare" script
       - name: PNPM Install
-        run: pnpm install --frozen-lockfile
+        run: |
+          pnpm install --frozen-lockfile
+          uv sync --frozen
 
       - name: Run project-wide linters
         run: turbo run lint

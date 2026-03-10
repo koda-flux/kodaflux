@@ -24,7 +24,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # NOTE: Update uv image tag when changed in project
 COPY --from=ghcr.io/astral-sh/uv:0.10.6 /uv /uvx /bin/
 COPY --from=prepare /code/out/full/packages/backend/ .
-RUN uv sync --no-dev \
+RUN uv sync --frozen --no-dev \
 	&& chown -R fastapi:python .venv/
 
 USER fastapi

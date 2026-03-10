@@ -21,10 +21,10 @@ RUN turbo prune frontend --docker
 FROM base AS builder
 
 COPY --from=prepare /app/out/json/ .
-RUN pnpm install --frozen-lockfile
+RUN HUSKY=0 pnpm install --frozen-lockfile
 
 COPY --from=prepare /app/out/full/ .
-RUN turbo run build
+RUN DOCKER=1 turbo run build
 
 
 FROM base AS runner

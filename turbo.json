@@ -15,5 +15,6 @@
 		},
 		"lint": {},
 		"lint:fix": {}
-	}
+	},
+	"globalPassThroughEnv": ["DOCKER"]
 }
