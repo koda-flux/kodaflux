@@ -41,5 +41,33 @@ resource "digitalocean_app" "kodaflux_app" {
       build_command = "pnpm install --frozen-lockfile && pnpm run build"
       output_dir    = "packages/frontend/out"
     }
+
+    ingress {
+      rule {
+        component {
+          name = "frontend"
+        }
+        match {
+          path {
+            prefix = "/"
+          }
+        }
+      }
+
+      rule {
+        component {
+          name = "backend"
+        }
+        match {
+          path {
+            prefix = "/api"
+          }
+        }
+      }
+    }
+
+    vpc {
+      id = digitalocean_vpc.main.id
+    }
   }
 }
