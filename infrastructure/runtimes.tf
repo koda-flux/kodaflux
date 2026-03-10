@@ -13,7 +13,7 @@ resource "digitalocean_app" "kodaflux_app" {
 
       image {
         registry_type = var.container_registry_type
-        repository    = "${var.container_repository_name}/${var.backend_image_name}"
+        repository    = var.backend_image_name
         tag           = "latest"
 
         deploy_on_push {
@@ -37,7 +37,7 @@ resource "digitalocean_app" "kodaflux_app" {
         branch         = "main"
       }
 
-      build_command = "pnpm install --frozen-lockfile && pnpm run build --filter=frontend"
+      build_command = "corepack enable && pnpm install --frozen-lockfile && pnpm run build --filter=frontend"
       output_dir    = "packages/frontend/out"
     }
 
