@@ -56,7 +56,7 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            // 1. Retrieve existing bot comments for the PR
+            // Retrieve existing bot comments for the PR
             const { data: comments } = await github.rest.issues.listComments({
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -67,7 +67,7 @@ jobs:
               return comment.user.type === 'Bot' && comment.body.includes('Terraform Initialization')
             })
 
-            // 2. Prepare the body of the comment using a Template Literal
+            // Prepare the body of the comment using a Template Literal
             const output = `#### Terraform Initialization ⚙️ \`${{ steps.init.outcome }}\`
             #### Terraform Validation 🤖 \`${{ steps.validate.outcome }}\`
             <details><summary>Validation Output</summary>
@@ -90,7 +90,7 @@ jobs:
 
             *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`, Working Directory: \`infrastructure\`, Workflow: \`${{ github.workflow }}\`*`;
 
-            // 3. If we have a comment, update it, otherwise create a new one
+            // If we have a comment, update it, otherwise create a new one
             if (botComment) {
               await github.rest.issues.updateComment({
                 owner: context.repo.owner,

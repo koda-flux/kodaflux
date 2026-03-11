@@ -11,7 +11,41 @@ permissions:
   contents: read
 
 jobs:
+  # Detects changes in app and infrastructure packages
+  changes:
+    runs-on: ubuntu-latest
+    # Only check for changes when:
+    # - Event is either push, pull_request or workflow_dispatch
+    # - Does not contain "[skipci]" in commit message
+    if: ${{ (github.event_name == 'push' || github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch') && !(contains(github.event.commits.message, '[skipci]')) }}
+    outputs:
+      agent: ${{ steps.filter.outputs.agent }}
+      backend: ${{ steps.filter.outputs.backend }}
+      frontend: ${{ steps.filter.outputs.frontend }}
+      infrastructure: ${{ steps.filter.outputs.infrastructure }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            backend:
+              - 'packages/backend/**'
+            frontend:
+              - 'packages/frontend/**'
+            agent:
+              - 'packages/agent/**'
+            infrastructure:
+              - 'infrastructure/**'
+
+  # Runs project-wide linting
   lint:
+    needs: [changes]
+    # Only run linting when:
+    # - Event is not "workflow_dispatch"
+    # - Event is either push or pull request
+    # - Does not contain "[skipci]" in the commit message
+    if: ${{ github.event_name != 'workflow_dispatch' && ((github.event_name == 'push' || github.event_name == 'pull_request') && !(contains(github.event.commits.message, '[skipci]'))) }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -26,37 +60,30 @@ jobs:
       - name: Run project-wide linters
         run: turbo run lint
 
+  # Runs project-wide test suites
   test:
+    needs: [changes]
     runs-on: ubuntu-latest
+    # Only run tests when:
+    # - Event is either a push, pull_request or workflow_dispatch
+    # - Does not contain "[skipci]" in the commit message
+    if: ${{ (github.event_name == 'push' || github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch') && !(contains(github.event.commits.message, '[skipci]')) }}
     steps:
       - uses: actions/checkout@v6
 
       - name: Run tests
         run: echo "Tests to be implemented once the hackathon submission is done. No new features."
 
-  # Detects changes in app packages
-  changes:
-    runs-on: ubuntu-latest
-    outputs:
-      backend: ${{ steps.filter.outputs.backend }}
-      frontend: ${{ steps.filter.outputs.frontend }}
-    steps:
-      - uses: actions/checkout@v6
-      - uses: dorny/paths-filter@v3
-        id: filter
-        with:
-          filters: |
-            backend:
-              - 'packages/backend/**'
-            frontend:
-              - 'packages/frontend/**'
-            agent:
-              - 'packages/agent/**'
-
   # Builds and pushes docker images for frontend & backend packages
+  #
+  # Successfully built images will be pushed to DOCR and an auto-deployment will be triggered
   build-and-push:
     needs: [lint, test, changes]
     runs-on: ubuntu-latest
+    # Only run tests when:
+    # - Event is either a push, pull_request or workflow_dispatch
+    # - Does not contain "[skipci]" in the commit message
+    if: ${{ (github.event_name == 'push' || github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch') && !(contains(github.event.commits.message, '[skipci]')) }}
     permissions:
       packages: write
     strategy:
