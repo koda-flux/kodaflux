@@ -11,4 +11,6 @@ dependencies = [
     "gradient>=3.11.0",
     "langchain-mcp-adapters>=0.2.0",
     "langchain-community>=0.3.31",
+    "ddgs>=9.11.3",
+    "langchain>=0.3.28",
 ]
