@@ -68,6 +68,8 @@ importers:
 
   infrastructure: {}
 
+  packages/agent: {}
+
   packages/backend: {}
 
   packages/frontend:
