@@ -3,9 +3,10 @@
 	"version": "0.0.0",
 	"private": true,
 	"scripts": {
-		"dev": "uv run gradient agent run",
-		"test": "uv run pytest",
+		"dev": "uv run gradient agent run --dev",
+		"start": "uv run gradient agent run",
 		"lint": "uv run ruff check",
-		"lint:fix": "uv run ruff check --fix"
+		"lint:fix": "uv run ruff check --fix",
+		"deploy": "uv run gradient agent deploy"
 	}
 }

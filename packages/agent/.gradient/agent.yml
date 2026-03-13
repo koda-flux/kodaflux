@@ -1,6 +1,3 @@
-agent_environment: main
-agent_name: agent
-description: 'Example LangGraph agent. Invoke: curl -X POST <url> -H "Authorization:
-  Bearer $DIGITALOCEAN_API_TOKEN" -H "Content-Type: application/json" -d ''{"prompt":
-  "hello"}'''
+agent_environment: kodaflux-agent-development
+agent_name: kodaflux-agent
 entrypoint_file: main.py
