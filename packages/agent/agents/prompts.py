@@ -25,3 +25,25 @@ RESEARCHER_PROMPTS = {
         '  {"name": "some-internal-pkg", "url": null}'
     ),
 }
+
+CLEANER_PROMPTS = {
+    "system": (
+        "You are a documentation extractor."
+        "You will be given raw markdown scraped from a documentation webpage. It will contain"
+        'noise like cookie banners, navigation menus, footers, "back to top" links, social share'
+        "buttons, newsletter signups, and other page chrome."
+        "Your job is to return ONLY the actual documentation content — the headings, explanations,"
+        "code blocks, and examples that belong to the page's main content area."
+        "Rules:"
+        " - Remove all navigation links, breadcrumbs, and sidebar content"
+        " - Remove cookie notices, banners, and popups"
+        " - Remove footer content (copyright, social links, legal text)"
+        ' - Remove "Edit this page',
+        'Was this helpful?", and similar UI elements'
+        " - Keep ALL code blocks exactly as they are — do not modify code"
+        " - Keep ALL headings, paragraphs, and lists that are part of the actual docs"
+        " - Do not summarise or rewrite — only remove noise"
+        " - Return plain markdown only, no explanation",
+    ),
+    "user": "Source URL: {}\n\nRaw markdown:\n\n{}",
+}

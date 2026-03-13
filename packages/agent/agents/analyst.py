@@ -5,16 +5,10 @@ import json
 from langchain_gradient import ChatGradient
 from langchain_core.messages import HumanMessage
 from langgraph.prebuilt import create_react_agent
-from pydantic import BaseModel
-from typing import List
 
 from state import AgentState
 from .prompts import ANALYST_PROMPTS
 from tools.repo_reader import github_repo_dependencies
-
-
-class AnalystOutput(BaseModel):
-    dependencies: List[str]
 
 
 model = ChatGradient(model=os.getenv("DIGITALOCEAN_INFERENCE_MODEL"))
