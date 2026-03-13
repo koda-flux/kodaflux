@@ -7,6 +7,7 @@ from langgraph.graph import StateGraph, END
 from agents.analyst import analyst
 from agents.researcher import researcher
 from agents.scraper import scraper
+from agents.formatter import formatter
 
 AGENT_GRAPH: Optional[StateGraph] = None
 
@@ -18,12 +19,14 @@ async def build_graph() -> StateGraph:
     graph.add_node("analyst", analyst)
     graph.add_node("researcher", researcher)
     graph.add_node("scraper", scraper)
+    graph.add_node("formatter", formatter)
 
     # Edges
     graph.set_entry_point("analyst")
     graph.add_edge("analyst", "researcher")
     graph.add_edge("researcher", "scraper")
-    graph.add_edge("scraper", END)
+    graph.add_edge("scraper", "formatter")
+    graph.add_edge("formatter", END)
 
     return graph.compile()
 
@@ -54,6 +57,5 @@ async def main(payload: Dict[str, str], context: RequestContext):
     resp = await AGENT_GRAPH.ainvoke(initial_state, {"recursion_limit": 100})
     return {
         "project_name": resp["project_name"],
-        "documentation_urls": resp["docs_urls"],
         "dep_docs": resp["docs_url_content"],
     }

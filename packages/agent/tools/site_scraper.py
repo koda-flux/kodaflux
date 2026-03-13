@@ -7,6 +7,7 @@ from firecrawl import FirecrawlApp
 from langchain_core.tools import tool
 import httpx
 
+
 firecrawl = FirecrawlApp(api_key=os.getenv("FIRECRAWL_API_KEY"))
 
 CACHE_DIR = Path(os.path.join(".cache", "scraper"))
