@@ -6,6 +6,7 @@ from gradient_adk import entrypoint, RequestContext
 from langgraph.graph import StateGraph, END
 from agents.analyst import analyst
 from agents.researcher import researcher
+from agents.scraper import scraper
 
 AGENT_GRAPH: Optional[StateGraph] = None
 
@@ -16,11 +17,13 @@ async def build_graph() -> StateGraph:
     # Nodes
     graph.add_node("analyst", analyst)
     graph.add_node("researcher", researcher)
+    graph.add_node("scraper", scraper)
 
     # Edges
     graph.set_entry_point("analyst")
     graph.add_edge("analyst", "researcher")
-    graph.add_edge("researcher", END)
+    graph.add_edge("researcher", "scraper")
+    graph.add_edge("scraper", END)
 
     return graph.compile()
 
@@ -42,7 +45,8 @@ async def main(payload: Dict[str, str], context: RequestContext):
         "repo_url": repo_url,
         "project_name": repo_url.split("/")[-1],
         "dependencies": [],
-        "dep_infos": [],
+        "docs_urls": [],
+        "docs_urls_content": [],
         "stored": False,
     }
 
@@ -51,4 +55,5 @@ async def main(payload: Dict[str, str], context: RequestContext):
     return {
         "project_name": resp["project_name"],
         "documentation_urls": resp["docs_urls"],
+        "dep_docs": resp["docs_url_content"],
     }
