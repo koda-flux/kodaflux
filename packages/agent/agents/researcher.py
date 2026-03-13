@@ -1,21 +1,87 @@
-from langchain_community.tools import DuckDuckGoSearchRun
+import hashlib
+import json
+import os
+import re
+from pathlib import Path
+
+from firecrawl import FirecrawlApp
 from langchain_gradient import ChatGradient
 from langchain_core.messages import SystemMessage, HumanMessage
-from prompt import RESEARCHER_PROMPT
-import json
-import re
 
-search_tool = DuckDuckGoSearchRun()
-llm = ChatGradient(model="openai-gpt-oss-120b")
+from state import AgentState
+from agents.prompts import RESEARCHER_PROMPTS
 
 
-def _search_for_dep(dep_name: str) -> dict:
-    # Step 1: use DuckDuckGo to get search results
-    search_results = search_tool.run(f"{dep_name} official documentation quickstart")
+model = ChatGradient(model=os.getenv("DIGITALOCEAN_INFERENCE_MODEL"))
+firecrawl = FirecrawlApp(api_key=os.getenv("FIRECRAWL_API_KEY"))
 
-    # Step 2: ask the LLM to pick the best URL from those results
+CACHE_DIR = Path(".cache")
+CACHE_DIR.mkdir(exist_ok=True)
+
+
+def cache_key(dep_name: str) -> Path:
+    key = hashlib.md5(dep_name.lower().encode()).hexdigest()
+    return CACHE_DIR / f"{key}.json"
+
+
+def read_cache(dep_name: str) -> dict | None:
+    path = cache_key(dep_name)
+    try:
+        if path.exists():
+            return json.loads(path.read_text())
+    except Exception:
+        pass
+    return None
+
+
+def write_cache(dep_name: str, result: dict) -> None:
+    try:
+        cache_key(dep_name).write_text(json.dumps(result))
+    except Exception:
+        pass
+
+
+def firecrawl_search(dep_name: str) -> str:
+    """
+    Uses Firecrawl's search endpoint to find the dep's docs page.
+    Returns the raw search result text to pass to the LLM.
+    """
+    results = firecrawl.search(
+        f"{dep_name} official documentation quickstart getting started",
+        limit=5,
+    )
+    if not results or not results.web:
+        return ""
+
+    # Format results as readable text for the LLM to reason over
+    lines = []
+    for item in results.web:
+        title = getattr(item, "title", "")
+        url = getattr(item, "url", "")
+        description = getattr(item, "description", "")
+        lines.append(f"- {title}\n  URL: {url}\n  {description}")
+
+    return "\n\n".join(lines)
+
+
+async def search_for_dep(dep_name: str) -> dict:
+    # Return cached result if available
+    cached = read_cache(dep_name)
+    if cached is not None:
+        print(f"[cache hit] {dep_name}")
+        return cached
+
+    # Search via Firecrawl
+    search_results = firecrawl_search(dep_name)
+
+    if not search_results:
+        result = {"name": dep_name, "url": None}
+        write_cache(dep_name, result)
+        return result
+
+    # Ask the LLM to pick the best URL from the search results
     messages = [
-        SystemMessage(content=RESEARCHER_PROMPT),
+        SystemMessage(content=RESEARCHER_PROMPTS["system"]),
         HumanMessage(
             content=(
                 f"Dependency: {dep_name}\n\n"
@@ -25,25 +91,27 @@ def _search_for_dep(dep_name: str) -> dict:
         ),
     ]
 
-    response = llm.invoke(messages)
-    raw = response.content.strip()
-
-    # Strip Markdown fences if present
-    raw = re.sub(r"^```json|^```|```$", "", raw, flags=re.MULTILINE).strip()
+    response = await model.ainvoke(messages)
+    raw = re.sub(
+        r"^```json|^```|```$", "", response.content.strip(), flags=re.MULTILINE
+    ).strip()
 
     try:
-        return json.loads(raw)
+        result = json.loads(raw)
     except json.JSONDecodeError:
-        return {"name": dep_name, "url": None}
+        result = {"name": dep_name, "url": None}
+
+    # Cache the result before returning
+    write_cache(dep_name, result)
+    return result
 
 
-def find_doc_urls(dependencies: list[str]) -> list[dict]:
-    """
-    Takes a list of dependency names, returns a list of
-    {"name": str, "url": str | None} dicts.
-    """
-    results = []
-    for dep in dependencies:
-        result = _search_for_dep(dep)
-        results.append(result)
-    return [dep[0] for dep in results if dep[0]["url"] is not None]
+async def researcher(state: AgentState) -> AgentState:
+    doc_urls: dict[str, str] = {}
+
+    for dep in state.get("dependencies", []):
+        result = await search_for_dep(dep)
+        if result.get("url"):
+            doc_urls[result["name"]] = result["url"]
+
+    return {**state, "docs_urls": doc_urls}

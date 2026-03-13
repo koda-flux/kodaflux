@@ -1,15 +1,54 @@
-from gradient_adk import entrypoint
-from typing import Dict
-from gradient_adk import RequestContext
-from tools.repo_reader import fetch_dependencies
-from agents.researcher import find_doc_urls
-import os
+from typing import Dict, Optional
+
+from state import AgentState
+
+from gradient_adk import entrypoint, RequestContext
+from langgraph.graph import StateGraph, END
+from agents.analyst import analyst
+from agents.researcher import researcher
+
+AGENT_GRAPH: Optional[StateGraph] = None
+
+
+async def build_graph() -> StateGraph:
+    graph = StateGraph(AgentState)
+
+    # Nodes
+    graph.add_node("analyst", analyst)
+    graph.add_node("researcher", researcher)
+
+    # Edges
+    graph.set_entry_point("analyst")
+    graph.add_edge("analyst", "researcher")
+    graph.add_edge("researcher", END)
+
+    return graph.compile()
 
 
 @entrypoint
 async def main(payload: Dict[str, str], context: RequestContext):
-    deps = fetch_dependencies(payload["repo_url"], os.getenv("GITHUB_TOKEN"))
-    doc_urls = find_doc_urls(deps)
+    """Entrypoint"""
+
+    repo_url = payload.get("repo_url")
+    if not repo_url:
+        return {"error": "repo_url is required"}
+
+    # Build graph once and cache it.
+    global AGENT_GRAPH
+    if AGENT_GRAPH is None:
+        AGENT_GRAPH = await build_graph()
+
+    initial_state: AgentState = {
+        "repo_url": repo_url,
+        "project_name": repo_url.split("/")[-1],
+        "dependencies": [],
+        "dep_infos": [],
+        "stored": False,
+    }
+
+    # Invoke app
+    resp = await AGENT_GRAPH.ainvoke(initial_state, {"recursion_limit": 100})
     return {
-        "deps": doc_urls,
+        "project_name": resp["project_name"],
+        "documentation_urls": resp["docs_urls"],
     }
