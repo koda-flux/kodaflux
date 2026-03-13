@@ -1,16 +1,12 @@
-from typing import TypedDict, Optional
-
-
-class DepInfo(TypedDict):
-    name: str
-    doc_url: Optional[str]
-    markdown: Optional[str]
+from typing import List, Dict, TypedDict
 
 
 class AgentState(TypedDict):
+    """The shared state of the graph."""
+
     repo_url: str
     project_name: str
-    dependencies: list[str]
-    dep_infos: list[DepInfo]
+    dependencies: List[str]
+    docs_urls: Dict[str, str]
+    docs_url_content: List[Dict[str, str]]
     stored: bool
-    error: Optional[str]
