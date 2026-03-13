@@ -1,64 +1,61 @@
-"""
-Simple template agent using the gradient agent runtime with Gradient SDK (serverless inference) and LangGraph.
-"""
+from typing import Dict, Optional
 
-import os
-from typing import Dict, TypedDict
+from state import AgentState
 
-from gradient import AsyncGradient
 from gradient_adk import entrypoint, RequestContext
-from langgraph.graph import StateGraph
+from langgraph.graph import StateGraph, END
+from agents.analyst import analyst
+from agents.researcher import researcher
+from agents.scraper import scraper
+from agents.formatter import formatter
+
+AGENT_GRAPH: Optional[StateGraph] = None
 
 
-class State(TypedDict):
-    """The state of our graph."""
+async def build_graph() -> StateGraph:
+    graph = StateGraph(AgentState)
 
-    input: str
-    output: str
+    # Nodes
+    graph.add_node("analyst", analyst)
+    graph.add_node("researcher", researcher)
+    graph.add_node("scraper", scraper)
+    graph.add_node("formatter", formatter)
 
+    # Edges
+    graph.set_entry_point("analyst")
+    graph.add_edge("analyst", "researcher")
+    graph.add_edge("researcher", "scraper")
+    graph.add_edge("scraper", "formatter")
+    graph.add_edge("formatter", END)
 
-async def llm_call(state: State) -> State:
-    """Call the LLM"""
-
-    inference_client = AsyncGradient(
-        model_access_key=os.environ.get(
-            "GRADIENT_MODEL_ACCESS_KEY"
-        )
-    )
-
-    # Call the model
-    output = await inference_client.chat.completions.create(
-        messages=[
-            {
-                "role": "user",
-                "content": state["input"],
-            }
-        ],
-        model="openai-gpt-oss-120b",
-    )
-
-    # Set the state
-    state["output"] = output.choices[0].message.content
-    
-    return state
+    return graph.compile()
 
 
 @entrypoint
-async def main(input: Dict, context: RequestContext):
+async def main(payload: Dict[str, str], context: RequestContext):
     """Entrypoint"""
 
-    # Setup the graph
-    initial_state = State(
-        input=input.get("prompt"),
-        output=None
-    )
-    graph = StateGraph(State)
-    graph.add_node("llm_call", llm_call)
-    graph.set_entry_point("llm_call")
-    
-    # Attach the graph for instrumentation
-    app = graph.compile()
-    
-    # Invoke the app
-    result = await app.ainvoke(initial_state)
-    return result["output"]
+    repo_url = payload.get("repo_url")
+    if not repo_url:
+        return {"error": "repo_url is required"}
+
+    # Build graph once and cache it.
+    global AGENT_GRAPH
+    if AGENT_GRAPH is None:
+        AGENT_GRAPH = await build_graph()
+
+    initial_state: AgentState = {
+        "repo_url": repo_url,
+        "project_name": repo_url.split("/")[-1],
+        "dependencies": [],
+        "docs_urls": [],
+        "docs_urls_content": [],
+        "stored": False,
+    }
+
+    # Invoke app
+    resp = await AGENT_GRAPH.ainvoke(initial_state, {"recursion_limit": 100})
+    return {
+        "project_name": resp["project_name"],
+        "dep_docs": resp["docs_url_content"],
+    }

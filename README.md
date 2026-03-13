@@ -38,10 +38,20 @@ A simple AI powered documentation aggregator.
 	pnpm install
 	```
 
-	> 💡 This will also run `uv sync` in the root of the backend which is written in Python (FastAPI)
-
+	```bash
+	uv sync
+ 	```
 
 3. Create copies of all `.env` files and populate values as necessary.
+
+   >    Each of the packages located in the [packages/](./packages) directory have `.env.example` template files in their
+   >    respective roots. Create copies of these files to `.env` and populate the values as necessary
+
+   For convenience, you can run the [`setup_env_files.py`](./scripts/setup_env_files.py) script
+
+   ```bash
+    uv run ./scripts/setup_env_files.py
+    ```
 
 4. Start the external services
 
@@ -53,11 +63,16 @@ A simple AI powered documentation aggregator.
 	pnpm turbo db:migrate
 	```
 
-6. Run dev servers
+5. Run the dev servers
 
 	```bash
 	pnpm run dev
 	```
+
+	This will run all available packages:
+	- [frontend](./packages/frontend) - Nextjs
+	- [backend](./packages/backend) - FastAPI
+	- [agent](./packages/agent) - Gradient ADK
 
 # License
 
