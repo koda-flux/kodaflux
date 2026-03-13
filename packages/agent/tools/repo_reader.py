@@ -1,3 +1,4 @@
+import os
 import re
 import tomllib
 import json
@@ -5,6 +6,7 @@ import base64
 from typing import Callable, List
 
 from github import Github, GithubException, Repository
+from langchain_core.tools import tool
 
 
 def _parse_requirements(content: str) -> list[str]:
@@ -31,7 +33,7 @@ def _parse_requirements(content: str) -> list[str]:
         name = re.split(r"[><=!~;\[]", line)[0].strip()
         if name:
             deps.append(name)
-
+    print(deps)
     return deps
 
 
@@ -185,3 +187,19 @@ def fetch_dependencies(repo_url: str, github_token: str | None = None) -> List[s
 
     g.close()
     return sorted(all_deps, key=str.lower)
+
+
+@tool
+def github_repo_dependencies(repo_url: str) -> list[str]:
+    """
+    Fetches all dependencies from a GitHub repository by reading
+    requirements.txt, pyproject.toml, and package.json files
+    found anywhere in the repo tree.
+
+    Args:
+        repo_url: Full GitHub URL e.g. https://github.com/owner/repo
+
+    Returns:
+        Sorted list of unique dependency name strings.
+    """
+    return fetch_dependencies(repo_url, github_token=os.getenv("GITHUB_TOKEN"))
