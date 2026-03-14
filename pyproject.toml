@@ -8,6 +8,7 @@ dependencies = ["agent", "backend"]
 [dependency-groups]
 dev = [
     "pathspec>=1.0.4",
+    "pydevd-pycharm>=261.22158.126",
     "ruff>=0.15.5",
 ]
 

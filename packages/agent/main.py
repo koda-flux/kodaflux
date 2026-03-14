@@ -1,3 +1,4 @@
+import os
 from typing import Dict, Optional
 
 from state import AgentState
@@ -34,6 +35,13 @@ async def build_graph() -> StateGraph:
 @entrypoint
 async def main(payload: Dict[str, str], context: RequestContext):
     """Entrypoint"""
+
+    if os.getenv("DEBUG"):
+        import pydevd_pycharm
+
+        pydevd_pycharm.settrace(
+            "localhost", port=50521, stderr_to_server=True, stdout_to_server=True
+        )
 
     repo_url = payload.get("repo_url")
     if not repo_url:
