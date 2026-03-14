@@ -2,6 +2,7 @@ import os
 from pathlib import PurePosixPath
 
 import boto3
+from botocore.client import Config
 from botocore.exceptions import ClientError
 
 
@@ -14,12 +15,14 @@ class StorageProvider:
     def __init__(self):
         self.__endpoint = os.getenv("DIGITALOCEAN_SPACES_ENDPOINT")
         self.__bucket = os.getenv("DIGITALOCEAN_SPACES_BUCKET_NAME", "kodaflux-assets")
-        self.__client = boto3.client(
+        session = boto3.session.Session()
+        self.__client = session.client(
             "s3",
             region_name=os.getenv("DIGITALOCEAN_SPACES_REGION", "fra1"),
             endpoint_url=self.__endpoint,
             aws_access_key_id=os.getenv("DIGITALOCEAN_SPACES_KEY_ID"),
             aws_secret_access_key=os.getenv("DIGITALOCEAN_SPACES_SECRET_KEY"),
+            config=Config(s3={"addressing_style": "virtual"}),
         )
 
     def write_file(
@@ -27,7 +30,6 @@ class StorageProvider:
         key: str,
         content: str,
         content_type: str = "text/markdown",
-        public: bool = True,
     ) -> str:
         """
         Write a single text file to the bucket.
@@ -35,21 +37,17 @@ class StorageProvider:
         Args:
             key:          Full path inside the bucket, e.g. "my-project/docs/react.md"
             content:      File content as a string.
-            content_type: MIME type. Defaults to "text/markdown".
-            public:       If True, the file is publicly readable. Defaults to True.
+            content_type: MIME type. Defaults to "text/plain".
 
         Returns:
             The public URL of the written file.
         """
-        extra_args = {"ContentType": content_type}
-        if public:
-            extra_args["ACL"] = "public-read"
-
         self.__client.put_object(
             Bucket=self.__bucket,
             Key=key,
             Body=content.encode("utf-8"),
-            **extra_args,
+            ContentType=content_type,
+            ACL="public-read",
         )
         return self._public_url(key)
 
@@ -103,7 +101,6 @@ class StorageProvider:
         self,
         files: dict[str, str],
         content_type: str = "text/markdown",
-        public: bool = True,
     ) -> dict[str, str]:
         """
         Write multiple files to the bucket in one call.
@@ -111,7 +108,6 @@ class StorageProvider:
         Args:
             files:        Dict of { key: content } pairs.
             content_type: MIME type applied to all files. Defaults to "text/markdown".
-            public:       If True, all files are publicly readable.
 
         Returns:
             Dict of { key: public_url } for every file written.
@@ -120,7 +116,7 @@ class StorageProvider:
         for key, content in files.items():
             # html files need the correct content type so browsers render them
             resolved_type = "text/html" if key.endswith(".html") else content_type
-            urls[key] = self.write_file(key, content, resolved_type, public)
+            urls[key] = self.write_file(key, content, resolved_type)
         return urls
 
     def list_files(self, prefix: str = "") -> list[str]:

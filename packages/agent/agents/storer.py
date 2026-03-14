@@ -1,7 +1,5 @@
 import re
-import os
 
-import httpx
 
 from lib.storage_provider import StorageProvider
 from state import AgentState
@@ -73,15 +71,15 @@ async def storer(state: AgentState) -> AgentState:
     site_url = storage.get_project_url(project)
 
     # Signal completion to the backend
-    callback_url = os.getenv("COMPLETION_CALLBACK_URL")
-    if callback_url:
-        httpx.post(
-            callback_url,
-            json={
-                "project": project,
-                "status": "complete",
-                "site_url": site_url,
-            },
-        )
+    # callback_url = os.getenv("COMPLETION_CALLBACK_URL")
+    # if callback_url:
+    #     httpx.post(
+    #         callback_url,
+    #         json={
+    #             "project": project,
+    #             "status": "complete",
+    #             "site_url": site_url,
+    #         },
+    #     )
 
     return {**state, "stored": True, "site_url": site_url}

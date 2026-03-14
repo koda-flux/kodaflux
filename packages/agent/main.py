@@ -9,6 +9,7 @@ from agents.analyst import analyst
 from agents.researcher import researcher
 from agents.scraper import scraper
 from agents.formatter import formatter
+from agents.storer import storer
 
 AGENT_GRAPH: Optional[StateGraph] = None
 
@@ -21,13 +22,15 @@ async def build_graph() -> StateGraph:
     graph.add_node("researcher", researcher)
     graph.add_node("scraper", scraper)
     graph.add_node("formatter", formatter)
+    graph.add_node("storer", storer)
 
     # Edges
     graph.set_entry_point("analyst")
     graph.add_edge("analyst", "researcher")
     graph.add_edge("researcher", "scraper")
     graph.add_edge("scraper", "formatter")
-    graph.add_edge("formatter", END)
+    graph.add_edge("formatter", "storer")
+    graph.add_edge("storer", END)
 
     return graph.compile()
 
@@ -56,8 +59,9 @@ async def main(payload: Dict[str, str], context: RequestContext):
         "repo_url": repo_url,
         "project_name": repo_url.split("/")[-1],
         "dependencies": [],
-        "docs_urls": [],
+        "docs_urls": {},
         "docs_urls_content": [],
+        "site_url": None,
         "stored": False,
     }
 
@@ -65,5 +69,6 @@ async def main(payload: Dict[str, str], context: RequestContext):
     resp = await AGENT_GRAPH.ainvoke(initial_state, {"recursion_limit": 100})
     return {
         "project_name": resp["project_name"],
-        "dep_docs": resp["docs_url_content"],
+        "site_url": resp["site_url"],
+        # "dep_docs": resp["docs_url_content"],
     }
