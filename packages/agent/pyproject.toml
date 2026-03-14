@@ -7,6 +7,8 @@ dependencies = [
     "firecrawl-py>=4.19.0",
     "gradient-adk>=0.2.11",
     "langchain-gradient>=0.1.24",
-    "langchain-mcp-adapters<0.2.0",
     "pygithub>=2.8.1",
 ]
+
+[tool.setuptools]
+packages = ["agents", "lib"]
