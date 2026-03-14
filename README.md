@@ -47,10 +47,11 @@ A simple AI powered documentation aggregator.
    >    Each of the packages located in the [packages/](./packages) directory have `.env.example` template files in their
    >    respective roots. Create copies of these files to `.env` and populate the values as necessary
 
-   For convenience, you can run the [`setup_env_files.py`](./scripts/setup_env_files.py) script
+   For convenience, you can run the [`setup_env_files.py`](./scripts/setup_env_files.py) script to create the copies of  the `.env.example`
+   templates. You will still need to populate the necessary values manually.
 
-   ```bash
-    uv run ./scripts/setup_env_files.py
+	 ```bash
+		uv run scripts/setup_env_files.py
     ```
 
 4. Start the external services
@@ -82,6 +83,6 @@ Refer to the [LICENSE](./LICENSE) file to view the license applied to this proje
 
 <div align='center'>
 	<small>
-		Build by <a href='https://lebophoshoko.dedyn.io'>Lebogang Phoshoko ⚒
-	<small>
+		Built by <a href='https://lebophoshoko.dedyn.io'>Lebogang Phoshoko ⚒</a>
+	</small>
 </div>
