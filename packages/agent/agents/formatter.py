@@ -51,7 +51,7 @@ async def formatter(state: AgentState) -> AgentState:
         cached = read_cache(url)
         if cached is not None:
             print(f"[cache hit] {url}")
-            formatted_docs.append({**dep, "markdown": cached})
+            formatted_docs.append({**dep, "markdown": cached["markdown"]})
             continue
 
         # Write minimal stub if no content was scraped
