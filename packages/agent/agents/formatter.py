@@ -25,7 +25,7 @@ def read_cache(url: str) -> str | None:
     path = cache_key(url)
     try:
         if path.exists():
-            return json.loads(path.read_text())["markdown"]
+            return json.loads(path.read_text())
     except Exception:
         pass
     return None
@@ -51,7 +51,8 @@ async def formatter(state: AgentState) -> AgentState:
         cached = read_cache(url)
         if cached is not None:
             print(f"[cache hit] {url}")
-            return cached
+            formatted_docs.append({**dep, "markdown": cached["markdown"]})
+            continue
 
         # Write minimal stub if no content was scraped
         if not raw_markdown:
@@ -62,6 +63,7 @@ async def formatter(state: AgentState) -> AgentState:
                 f"- [Search for {name}](https://www.google.com/search?q={name}+documentation)\n"
             )
             formatted_docs.append({**dep, "markdown": stub})
+            write_cache(url, stub)
             continue
 
         resp = await model.ainvoke(

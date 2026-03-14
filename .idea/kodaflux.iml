@@ -9,8 +9,4 @@
     <orderEntry type="jdk" jdkName="uv (kodaflux)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
-  <component name="PyDocumentationSettings">
-    <option name="format" value="PLAIN" />
-    <option name="myDocStringFormat" value="Plain" />
-  </component>
 </module>

@@ -3,11 +3,16 @@ name = "kodaflux"
 version = "0.0.0"
 requires-python = ">=3.12"
 readme = "README.md"
-dependencies = ["agent", "backend"]
+dependencies = [
+    "agent",
+    "backend",
+    "boto3-stubs~=1.42.68",
+]
 
 [dependency-groups]
 dev = [
     "pathspec>=1.0.4",
+    "pydevd-pycharm>=261.22158.126",
     "ruff>=0.15.5",
 ]
 

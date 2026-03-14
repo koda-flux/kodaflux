@@ -1,6 +1,7 @@
 resource "digitalocean_spaces_bucket" "assets" {
   name   = "kodaflux-assets"
   region = var.region
+  acl    = "public-read"
 }
 
 resource "digitalocean_database_cluster" "postgres" {

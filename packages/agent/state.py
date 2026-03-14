@@ -9,4 +9,5 @@ class AgentState(TypedDict):
     dependencies: List[str]
     docs_urls: Dict[str, str]
     docs_url_content: List[Dict[str, str]]
+    site_url: str
     stored: bool
