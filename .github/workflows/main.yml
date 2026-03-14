@@ -52,7 +52,7 @@ jobs:
       - uses: ./.github/actions/setup-tools
 
       # Runs `uv sync` as part of "prepare" script
-      - name: PNPM Install
+      - name: PNPM Install & UV Sync
         run: |
           pnpm install --frozen-lockfile
           uv sync --frozen
