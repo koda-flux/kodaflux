@@ -6,6 +6,7 @@ resource "digitalocean_project" "project" {
   resources = [
     digitalocean_app.kodaflux_app.urn,
     digitalocean_spaces_bucket.assets.urn,
-    digitalocean_database_cluster.postgres.urn
+    digitalocean_database_cluster.postgres.urn,
+    digitalocean_database_cluster.redis.urn
   ]
 }
