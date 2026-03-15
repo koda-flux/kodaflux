@@ -1,47 +1,66 @@
 import asyncio
 import json
+import os
+
 from fastapi import APIRouter
 from fastapi.responses import StreamingResponse
-from typing import AsyncGenerator
+import redis.asyncio as aioredis
+
 
 router = APIRouter(prefix="/events", tags=["events"])
 
-# In-memory queue — one queue per connected frontend client
-# TODO: Implement redis usage for possible perfomance bottlenecks.
-subscribers: list[asyncio.Queue] = []
+CHANNEL = os.getenv("REDIS_CHANNEL")
+if not CHANNEL:
+    raise ValueError("REDIS_CHANNEL environment variable not set")
+
+
+def get_redis() -> aioredis.Redis:
+    redis_url = os.getenv("REDIS_URL")
+    if not redis_url:
+        raise ValueError("REDIS_URL environment variable not set")
+
+    return aioredis.from_url(
+        redis_url,
+        decode_responses=True,
+    )
 
 
 async def notify_new_project(data: dict) -> None:
-    """Push a new project event to all connected SSE clients."""
-    for queue in subscribers:
-        await queue.put(data)
-
-
-async def event_generator(queue: asyncio.Queue) -> AsyncGenerator[str, None]:
+    """
+    Publishes a new project event to the Redis channel.
+    Any worker with an active SSE subscriber will pick it up.
+    """
+    r = get_redis()
     try:
-        while True:
-            data = await queue.get()
-            yield f"data: {json.dumps(data)}\n\n"
+        await r.publish(CHANNEL, json.dumps(data))
+    finally:
+        await r.aclose()
+
+
+async def event_generator():
+    """
+    Subscribes to the Redis channel and yields SSE events
+    as they arrive.
+    """
+    r = get_redis()
+    pubsub = r.pubsub()
+    await pubsub.subscribe(CHANNEL)
+
+    try:
+        async for message in pubsub.listen():
+            if message["type"] == "message":
+                yield f"data: {message['data']}\n\n"
     except asyncio.CancelledError:
         pass
+    finally:
+        await pubsub.unsubscribe(CHANNEL)
+        await r.aclose()
 
 
 @router.get("/stream")
 async def event_stream():
-    """
-    SSE endpoint. The frontend connects here and receives a push
-    event whenever a new project is created.
-    """
-    queue: asyncio.Queue = asyncio.Queue()
-    subscribers.append(queue)
-
-    async def cleanup():
-        async for chunk in event_generator(queue):
-            yield chunk
-        subscribers.remove(queue)
-
     return StreamingResponse(
-        cleanup(),
+        event_generator(),
         media_type="text/event-stream",
         headers={
             "Cache-Control": "no-cache",

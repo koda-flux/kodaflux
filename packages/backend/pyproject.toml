@@ -5,5 +5,6 @@ requires-python = ">=3.12"
 dependencies = [
     "fastapi[standard]>=0.135.1",
     "psycopg2-binary>=2.9.11",
+    "redis>=7.3.0",
     "sqlalchemy>=2.0.48",
 ]

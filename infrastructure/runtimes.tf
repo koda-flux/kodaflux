@@ -56,6 +56,13 @@ resource "digitalocean_app" "kodaflux_app" {
         scope = "RUN_TIME"
         type  = "SECRET"
       }
+
+      env {
+        key   = "REDIS_URL"
+        value = digitalocean_database_cluster.redis.uri
+        scope = "RUN_TIME"
+        type  = "SECRET"
+      }
     }
 
     static_site {
