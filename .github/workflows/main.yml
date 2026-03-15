@@ -17,7 +17,7 @@ jobs:
     # Only check for changes when:
     # - Event is either push, pull_request or workflow_dispatch
     # - Does not contain "[skipci]" in commit message
-    if: ${{ (github.event_name == 'push' || github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch') && !(contains(github.event.commits.message, '[skipci]')) }}
+    if: ${{ !(contains(github.event.commits.message, '[skipci]')) }}
     outputs:
       agent: ${{ steps.filter.outputs.agent }}
       backend: ${{ steps.filter.outputs.backend }}
@@ -43,9 +43,8 @@ jobs:
     needs: [changes]
     # Only run linting when:
     # - Event is not "workflow_dispatch"
-    # - Event is either push or pull request
     # - Does not contain "[skipci]" in the commit message
-    if: ${{ github.event_name != 'workflow_dispatch' && ((github.event_name == 'push' || github.event_name == 'pull_request') && !(contains(github.event.commits.message, '[skipci]'))) }}
+    if: ${{ (github.event_name != 'workflow_dispatch') || !(contains(github.event.commits.message, '[skipci]')) }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -65,14 +64,45 @@ jobs:
     needs: [changes]
     runs-on: ubuntu-latest
     # Only run tests when:
-    # - Event is either a push, pull_request or workflow_dispatch
-    # - Does not contain "[skipci]" in the commit message
-    if: ${{ (github.event_name == 'push' || github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch') && !(contains(github.event.commits.message, '[skipci]')) }}
+    # - Event does not contain "[skipci]" in the commit message
+    if: ${{ !(contains(github.event.commits.message, '[skipci]')) }}
     steps:
       - uses: actions/checkout@v6
 
       - name: Run tests
         run: echo "Tests to be implemented once the hackathon submission is done. No new features."
+
+  # Deploys the Gradient ADK Agent
+  deploy-agent:
+    needs: [ changes, lint, test ]
+    runs-on: ubuntu-latest
+    # Only deploy agent when:
+    # - Event does not contain "[skipci]" in the commit message
+    if: ${{ !(contains(github.event.commits.message, '[skipci]')) && (github.event_name == 'push') }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: ./.github/actions/setup-tools
+
+      - name: UV Sync
+        run: uv sync --frozen
+
+        # Always make sure to update dependencies mentioned in
+        # pyproject.toml in the requirements.txt
+      - name: Deploy Agent
+        working-directory: packages/agent
+        env:
+          DIGITALOCEAN_API_TOKEN: ${{ secrets.TF_VAR_DO_TOKEN  }}
+          DIGITALOCEAN_INFERENCE_KEY: ${{ secrets.DIGITALOCEAN_INFERENCE_KEY }}
+          DIGITALOCEAN_INFERENCE_MODEL: ${{ secrets.DIGITALOCEAN_INFERENCE_MODEL }}
+          DIGITALOCEAN_SPACES_BUCKET_NAME: ${{ secrets.DIGITALOCEAN_SPACES_BUCKET_NAME }}
+          DIGITALOCEAN_SPACES_REGION: ${{ secrets.TF_VAR_REGION }}
+          DIGITALOCEAN_SPACES_ENDPOINT: ${{ secrets.DIGITALOCEAN_SPACES_ENDPOINT }}
+          DIGITALOCEAN_SPACES_KEY_ID: ${{ secrets.DIGITALOCEAN_SPACES_KEY_ID }}
+          DIGITALOCEAN_SPACES_SECRET_KEY: ${{ secrets.DIGITALOCEAN_SPACES_SECRET_KEY }}
+          GITHUB_TOKEN: ${{ secrets.AGENT_GITHUB_TOKEN }}
+          FIRECRAWL_API_KEY: ${{ secrets.FIRECRAWL_API_KEY }}
+          COMPLETION_CALLBACK_URL: ${{ secrets.COMPLETION_CALLBACK_URL }}
+        run: uv run gradient agent deploy
 
   # Builds and pushes docker images for frontend & backend packages
   #
@@ -81,9 +111,8 @@ jobs:
     needs: [lint, test, changes]
     runs-on: ubuntu-latest
     # Only run tests when:
-    # - Event is either a push, pull_request or workflow_dispatch
     # - Does not contain "[skipci]" in the commit message
-    if: ${{ (github.event_name == 'push' || github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch') && !(contains(github.event.commits.message, '[skipci]')) }}
+    if: ${{ !(contains(github.event.commits.message, '[skipci]')) && (github.event_name == 'push') }}
     permissions:
       packages: write
     strategy:

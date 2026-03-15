@@ -1,6 +1,7 @@
 variable "do_token" {
   type        = string
   description = "DigitalOcean API access token"
+  sensitive   = true
 }
 
 variable "environment" {
@@ -27,15 +28,6 @@ variable "container_registry_type" {
   default     = "DOCR"
 }
 
-# Ideally this is your GitHub username or the name of the
-# repository in which both build frontend and backend images
-# live
-variable "container_repository_name" {
-  type        = string
-  description = "The name of the repository where images live"
-  default     = "kodaflux"
-}
-
 variable "backend_image_name" {
   type        = string
   description = "The name of the backend service's container image"
@@ -51,10 +43,16 @@ variable "frontend_source_repo" {
 variable "spaces_access_key_id" {
   type        = string
   description = "The access key id used to access Digitalocean Spaces"
+  sensitive   = true
 }
 
 variable "spaces_secret_access_key" {
   type        = string
   description = "The secret access key used to access DigitalOcean Spaces"
+  sensitive   = true
 }
 
+variable "agent_url" {
+  type        = string
+  description = "The URL to the deployed Gradeint ADK agent"
+}
