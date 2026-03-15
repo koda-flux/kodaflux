@@ -2,3 +2,8 @@ gradient-adk
 langgraph
 langchain-core
 gradient
+boto3>=1.42.68
+firecrawl-py>=4.19.0
+gradient-adk>=0.2.11
+langchain-gradient>=0.1.24
+pygithub>=2.8.1
