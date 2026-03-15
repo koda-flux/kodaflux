@@ -49,6 +49,13 @@ resource "digitalocean_app" "kodaflux_app" {
         value = var.agent_url
         scope = "RUN_TIME"
       }
+
+      env {
+        key   = "DIGITALOCEAN_API_TOKEN"
+        value = var.do_token
+        scope = "RUN_TIME"
+        type  = "SECRET"
+      }
     }
 
     static_site {

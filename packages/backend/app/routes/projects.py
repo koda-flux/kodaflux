@@ -47,11 +47,18 @@ async def trigger_agent(repo_url: str) -> None:
     if not agent_url:
         raise HTTPException(status_code=500, detail="Agent URL not set")
 
+    token = os.getenv("DIGITALOCEAN_API_TOKEN")
+    if not token:
+        raise HTTPException(status_code=500, detail="DigitalOcean API token not set")
+
     try:
         async with httpx.AsyncClient() as client:
             response = await client.post(
                 f"{agent_url}/run",
                 json={"repo_url": repo_url},
+                headers={
+                    "Authorization": f"Bearer {token}",
+                },
                 timeout=600,  # 10 min hard ceiling
             )
             response.raise_for_status()
@@ -107,7 +114,7 @@ async def project_callback(payload: ProjectCallback, db: Session = Depends(get_d
     return {"id": project.id, "site_url": project.site_url}
 
 
-@router.get("/", response_model=List[ProjectResponse])
+@router.get("", response_model=List[ProjectResponse])
 def list_projects(db: Session = Depends(get_db)):
     """
     Returns all projects, sorted by creation timestamp from latest to oldest.
