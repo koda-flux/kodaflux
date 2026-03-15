@@ -20,6 +20,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(health.router)
+app.include_router(health.router, prefix="/healthz")
 app.include_router(projects.router)
 app.include_router(events.router)

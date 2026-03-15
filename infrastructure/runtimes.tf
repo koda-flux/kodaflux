@@ -39,7 +39,7 @@ resource "digitalocean_app" "kodaflux_app" {
 
       env {
         key   = "CORS_ALLOWED_ORIGINS"
-        value = "http://localhost:3000,${digitalocean_app.kodaflux_app.live_url}"
+        value = "http://localhost:3000,"
         scope = "RUN_TIME"
         type  = "SECRET"
       }
