@@ -18,7 +18,7 @@ resource "digitalocean_app" "kodaflux_app" {
         tag           = "latest"
 
         deploy_on_push {
-          enabled = true # Makes system run on bleeding edge
+          enabled = true # Bleeding edge
         }
       }
 
@@ -35,6 +35,19 @@ resource "digitalocean_app" "kodaflux_app" {
         value = digitalocean_database_cluster.postgres.private_uri
         scope = "RUN_TIME"
         type  = "SECRET"
+      }
+
+      env {
+        key   = "CORS_ALLOWED_ORIGINS"
+        value = "http://localhost:3000,${digitalocean_app.kodaflux_app.live_url}"
+        scope = "RUN_TIME"
+        type  = "SECRET"
+      }
+
+      env {
+        key   = "AGENT_URL"
+        value = var.agent_url
+        scope = "RUN_TIME"
       }
     }
 

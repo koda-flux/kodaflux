@@ -7,6 +7,7 @@ dependencies = [
     "agent",
     "backend",
     "boto3-stubs~=1.42.68",
+    "python-dotenv>=1.2.2",
 ]
 
 [dependency-groups]

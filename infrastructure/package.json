@@ -1,12 +1,12 @@
 {
-  "name": "@repo/infrastructure",
-  "version": "0.0.0",
-  "private": true,
-  "scripts": {
-    "init": "terraform init",
-    "plan": "terraform plan",
-    "apply": "terraform apply",
-    "lint": "tflint --init && tflint --minimum-failure-severity=error -f compact",
-    "lint:fix": "tflint --init && tflint --minimum-failure-severity=error --fix && terraform fmt"
-  }
+	"name": "@repo/infrastructure",
+	"version": "0.0.0",
+	"private": true,
+	"scripts": {
+		"init": "dotenv -c -- terraform init",
+		"plan": "dotenv -c -- terraform plan",
+		"apply": "dotenv -c -- terraform apply",
+		"lint": "dotenv -c -- tflint --init && tflint --minimum-failure-severity=error -f compact",
+		"lint:fix": "dotenv -c -- tflint --init && tflint --minimum-failure-severity=error --fix && terraform fmt"
+	}
 }
