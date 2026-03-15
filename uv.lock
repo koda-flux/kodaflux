@@ -1053,6 +1053,7 @@ dependencies = [
     { name = "agent" },
     { name = "backend" },
     { name = "boto3-stubs" },
+    { name = "python-dotenv" },
 ]
 
 [package.dev-dependencies]
@@ -1067,6 +1068,7 @@ requires-dist = [
     { name = "agent", editable = "packages/agent" },
     { name = "backend", editable = "packages/backend" },
     { name = "boto3-stubs", specifier = "~=1.42.68" },
+    { name = "python-dotenv", specifier = ">=1.2.2" },
 ]
 
 [package.metadata.requires-dev]
