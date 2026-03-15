@@ -53,7 +53,6 @@ def build_index_html(project_name: str) -> str:
 async def storer(state: AgentState) -> AgentState:
     project = state["project_name"]
     repo_url = state["repo_url"]
-    site_url = state.get("site_url", "")
     dependencies = state.get("dependencies", [])
     docs = state.get("docs_url_content", [])
     storage = StorageProvider()
@@ -77,9 +76,12 @@ async def storer(state: AgentState) -> AgentState:
 
     # Signal completion to the backend
     callback_url = os.getenv("COMPLETION_CALLBACK_URL")
-    if callback_url:
+    if not callback_url:
+        raise ValueError("[storer] callback url not set")
+
+    try:
         async with httpx.AsyncClient() as client:
-            await client.post(
+            response = await client.post(
                 callback_url,
                 json={
                     "project_name": project,
@@ -88,7 +90,16 @@ async def storer(state: AgentState) -> AgentState:
                     "dependencies": dependencies,
                     "status": "complete",
                 },
-                timeout=10,
+                timeout=30,
             )
+            response.raise_for_status()
+    except httpx.HTTPStatusError as exc:
+        print(
+            f"[storer] callback HTTP error: {exc.response.status_code} — {exc.response.text}"
+        )
+    except httpx.RequestError as exc:
+        print(f"[storer] callback request error: {exc}")
+    except Exception as exc:
+        print(f"[storer] callback unexpected error: {exc}")
 
     return {**state, "stored": True, "site_url": site_url}
