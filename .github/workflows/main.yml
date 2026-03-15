@@ -86,24 +86,6 @@ jobs:
       - name: UV Sync
         run: uv sync --frozen
 
-        # Always make sure to update dependencies mentioned in
-        # pyproject.toml in the requirements.txt
-      - name: Deploy Agent
-        working-directory: packages/agent
-        env:
-          DIGITALOCEAN_API_TOKEN: ${{ secrets.TF_VAR_DO_TOKEN  }}
-          DIGITALOCEAN_INFERENCE_KEY: ${{ secrets.DIGITALOCEAN_INFERENCE_KEY }}
-          DIGITALOCEAN_INFERENCE_MODEL: ${{ secrets.DIGITALOCEAN_INFERENCE_MODEL }}
-          DIGITALOCEAN_SPACES_BUCKET_NAME: ${{ secrets.DIGITALOCEAN_SPACES_BUCKET_NAME }}
-          DIGITALOCEAN_SPACES_REGION: ${{ secrets.TF_VAR_REGION }}
-          DIGITALOCEAN_SPACES_ENDPOINT: ${{ secrets.DIGITALOCEAN_SPACES_ENDPOINT }}
-          DIGITALOCEAN_SPACES_KEY_ID: ${{ secrets.DIGITALOCEAN_SPACES_KEY_ID }}
-          DIGITALOCEAN_SPACES_SECRET_KEY: ${{ secrets.DIGITALOCEAN_SPACES_SECRET_KEY }}
-          GITHUB_TOKEN: ${{ secrets.AGENT_GITHUB_TOKEN }}
-          FIRECRAWL_API_KEY: ${{ secrets.FIRECRAWL_API_KEY }}
-          COMPLETION_CALLBACK_URL: ${{ secrets.COMPLETION_CALLBACK_URL }}
-        run: uv run gradient agent deploy
-
   # Builds and pushes docker images for frontend & backend packages
   #
   # Successfully built images will be pushed to DOCR and an auto-deployment will be triggered
