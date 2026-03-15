@@ -1,6 +1,22 @@
+import os
+
 from fastapi import FastAPI
-from .routes.index import router as index_router
+from fastapi.middleware.cors import CORSMiddleware
 
-app = FastAPI()
+from app.database import Base, engine
+from app.routes import health, projects, events
 
-app.include_router(index_router, prefix="/healthz")
+Base.metadata.create_all(bind=engine)
+
+app = FastAPI(title="Kodaflux API")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=os.getenv("CORS_ALLOWED_ORIGINS", "*").split(","),
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+app.include_router(health.router)
+app.include_router(projects.router)
+app.include_router(events.router)

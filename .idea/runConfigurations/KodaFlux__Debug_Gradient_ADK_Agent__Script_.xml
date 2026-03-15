@@ -1,0 +1,14 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="KodaFlux: Debug Gradient ADK Agent (Script)" type="js.build_tools.npm">
+    <package-json value="$PROJECT_DIR$/packages/agent/package.json" />
+    <command value="run" />
+    <scripts>
+      <script value="dev:debug" />
+    </scripts>
+    <node-interpreter value="project" />
+    <envs>
+      <env name="DEBUG" value="1" />
+    </envs>
+    <method v="2" />
+  </configuration>
+</component>

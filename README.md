@@ -60,9 +60,7 @@ A simple AI powered documentation aggregator.
 	docker compose -f compose.dev.yml up -d
 	```
 
-	```bash
-	pnpm turbo db:migrate
-	```
+	> In this development setup, Tables will be created automatically when the server starts. A tool like [`Alembic`](https://alembic.sqlalchemy.org/en/latest/) will be used for more serious deployments.
 
 5. Run the dev servers
 
