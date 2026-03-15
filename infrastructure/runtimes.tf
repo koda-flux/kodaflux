@@ -63,6 +63,12 @@ resource "digitalocean_app" "kodaflux_app" {
         scope = "RUN_TIME"
         type  = "SECRET"
       }
+
+      env {
+        key   = "REDIS_CHANNEL"
+        value = var.redis_channel
+        scope = "RUN_TIME"
+      }
     }
 
     static_site {

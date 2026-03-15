@@ -56,3 +56,9 @@ variable "agent_url" {
   type        = string
   description = "The URL to the deployed Gradeint ADK agent"
 }
+
+variable "redis_channel" {
+  type        = string
+  description = "The channel where connected clients will listen"
+  default     = "kodaflux:projects"
+}
