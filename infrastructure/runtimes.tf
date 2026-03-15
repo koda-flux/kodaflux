@@ -32,7 +32,7 @@ resource "digitalocean_app" "kodaflux_app" {
 
       env {
         key   = "DATABASE_URL"
-        value = digitalocean_database_cluster.postgres.private_uri
+        value = digitalocean_database_cluster.postgres.uri
         scope = "RUN_TIME"
         type  = "SECRET"
       }
