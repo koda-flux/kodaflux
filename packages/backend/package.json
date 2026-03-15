@@ -3,7 +3,7 @@
 	"version": "0.0.0",
 	"private": true,
 	"scripts": {
-		"dev": "uv run fastapi dev app/main.py --reload",
+		"dev": "dotenv -c -- uv run fastapi dev app/main.py --reload",
 		"test": "uv run pytest",
 		"lint": "uv run ruff check",
 		"lint:fix": "uv run ruff check --fix"
