@@ -97,7 +97,7 @@ export default function Home() {
 		};
 
 		fetchProjects();
-		const interval = setInterval(fetchProjects, 4000);
+		const interval = setInterval(fetchProjects, 10000);
 		return () => clearInterval(interval);
 	}, [isGenerating, setIsGenerating, setProjects, form]);
 
@@ -129,10 +129,8 @@ export default function Home() {
 			{/* Hero Section */}
 			<section className="flex min-h-[60vh] flex-col items-center justify-center px-4 py-16">
 				<div className="mx-auto w-full max-w-xl text-center">
-					<h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
-						Kodaflux
-					</h1>
-					<p className="mt-4 text-lg text-muted-foreground text-balance">
+					<img alt="KodaFlux Logo" src="/logo.png" />
+					<p className="mt-2 text-lg text-muted-foreground text-balance">
 						Drop a GitHub repo. Get a documentation site.
 					</p>
 
