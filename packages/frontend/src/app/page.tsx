@@ -73,7 +73,7 @@ export default function Home() {
 						const newProject = data[0];
 						setIsGenerating(false);
 						form.reset();
-						toast("Docs ready!", {
+						toast.success("Docs ready!", {
 							description: (
 								<a
 									href={newProject?.site_url}
@@ -84,7 +84,7 @@ export default function Home() {
 									{newProject?.site_url}
 								</a>
 							),
-							duration: Infinity,
+							duration: 30000,
 						});
 					}
 
