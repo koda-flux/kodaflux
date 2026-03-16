@@ -8,7 +8,6 @@ from typing import List
 
 from app.database import get_db
 from app.models import Project
-from app.routes.events import notify_new_project
 
 router = APIRouter(prefix="/projects", tags=["projects"])
 
@@ -100,16 +99,6 @@ async def project_callback(payload: ProjectCallback, db: Session = Depends(get_d
     db.add(project)
     db.commit()
     db.refresh(project)
-
-    # Push SSE event so the frontend for immediate rerender
-    await notify_new_project(
-        {
-            "id": project.id,
-            "project_name": project.project_name,
-            "site_url": project.site_url,
-            "status": project.status,
-        }
-    )
 
     return {"id": project.id, "site_url": project.site_url}
 

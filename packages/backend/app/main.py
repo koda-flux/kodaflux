@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 
 from app.database import Base, engine
-from app.routes import health, projects, events
+from app.routes import health, projects
 
 
 load_dotenv()
@@ -22,4 +22,3 @@ app.add_middleware(
 
 app.include_router(health.router, prefix="/healthz")
 app.include_router(projects.router)
-app.include_router(events.router)
