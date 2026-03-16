@@ -49,9 +49,13 @@ async def clean(url: str, markdown: str) -> str:
         print(f"[cache hit] {url}")
         return cached
 
+    truncated = markdown[:12000]
+    if len(markdown) > 12000:
+        truncated += "\n\n[... content truncated ...]"
+
     messages = [
         SystemMessage(content=CLEANER_PROMPTS["system"]),
-        HumanMessage(content=CLEANER_PROMPTS["user"].format(url, markdown)),
+        HumanMessage(content=CLEANER_PROMPTS["user"].format(url, truncated)),
     ]
     response = await model.ainvoke(messages)
     write_cache(url, response.content.strip())
@@ -64,6 +68,12 @@ async def scraper(state: AgentState) -> AgentState:
 
     for name, url in doc_urls.items():
         raw_markdown = scrape_url(url)
+
+        if raw_markdown is None:
+            print(f"[scraper] No content for {name} ({url}) — using stub")
+            site_content.append({"name": name, "url": url, "markdown": None})
+            continue
+
         cleaned_markdown = await clean(url, raw_markdown)
         site_content.append(
             {

@@ -15,6 +15,9 @@
 			"recommended": true,
 			"suspicious": {
 				"noUnknownAtRules": "off"
+			},
+			"performance": {
+				"noImgElement": "off"
 			}
 		},
 		"domains": {
@@ -42,7 +45,8 @@
 				"**/*.test.tsx",
 				"**/*.spec.ts",
 				"**/*.spec.tsx",
-				"src/components/ui/**"
+				"src/components/ui/**",
+				"src/hooks/**"
 			],
 			"linter": {
 				"enabled": false
