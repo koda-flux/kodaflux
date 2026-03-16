@@ -56,19 +56,6 @@ resource "digitalocean_app" "kodaflux_app" {
         scope = "RUN_TIME"
         type  = "SECRET"
       }
-
-      env {
-        key   = "REDIS_URL"
-        value = digitalocean_database_cluster.redis.uri
-        scope = "RUN_TIME"
-        type  = "SECRET"
-      }
-
-      env {
-        key   = "REDIS_CHANNEL"
-        value = var.redis_channel
-        scope = "RUN_TIME"
-      }
     }
 
     static_site {
@@ -81,6 +68,11 @@ resource "digitalocean_app" "kodaflux_app" {
 
       build_command = "corepack enable && pnpm install --frozen-lockfile && pnpm run build --filter=frontend"
       output_dir    = "packages/frontend/out"
+
+      env {
+        key   = "NEXT_PUBLIC_API_URL"
+        value = var.api_url
+      }
     }
 
     ingress {

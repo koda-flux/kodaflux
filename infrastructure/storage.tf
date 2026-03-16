@@ -12,12 +12,3 @@ resource "digitalocean_database_cluster" "postgres" {
   region     = var.region
   node_count = 1
 }
-
-resource "digitalocean_database_cluster" "redis" {
-  name       = "kodaflux-redis-cluster"
-  engine     = "valkey"
-  version    = "8"
-  size       = "db-s-1vcpu-1gb"
-  region     = var.region
-  node_count = 1
-}
