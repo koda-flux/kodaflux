@@ -108,4 +108,4 @@ def list_projects(db: Session = Depends(get_db)):
     """
     Returns all projects, sorted by creation timestamp from latest to oldest.
     """
-    return db.query(Project).order_by(Project.created_at.desc()).all()
+    return db.query(Project).order_by(Project.id.desc()).all()
