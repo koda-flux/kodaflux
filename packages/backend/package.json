@@ -4,7 +4,7 @@
 	"private": true,
 	"scripts": {
 		"dev": "dotenv -c -- uv run fastapi dev app/main.py --reload",
-		"start": "uv run fastapi run app/main.py",
+		"start": "dotenv -c -- uv run fastapi run app/main.py",
 		"test": "uv run pytest",
 		"lint": "uv run ruff check",
 		"lint:fix": "uv run ruff check --fix"

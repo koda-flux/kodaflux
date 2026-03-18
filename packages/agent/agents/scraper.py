@@ -17,6 +17,8 @@ model = ChatGradient(model=os.getenv("DIGITALOCEAN_INFERENCE_MODEL"))
 CACHE_DIR = Path(os.path.join(".cache", "cleaner"))
 CACHE_DIR.mkdir(parents=True, exist_ok=True)
 
+MAX_CHARS = 12000
+
 
 def cache_key(url: str) -> Path:
     key = hashlib.md5(url.encode()).hexdigest()
@@ -49,8 +51,8 @@ async def clean(url: str, markdown: str) -> str:
         print(f"[cache hit] {url}")
         return cached
 
-    truncated = markdown[:12000]
-    if len(markdown) > 12000:
+    truncated = markdown[:MAX_CHARS]
+    if len(markdown) > MAX_CHARS:
         truncated += "\n\n[... content truncated ...]"
 
     messages = [

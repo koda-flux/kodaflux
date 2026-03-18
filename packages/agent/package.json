@@ -5,7 +5,7 @@
 	"scripts": {
 		"dev": "uv run gradient agent run --dev",
 		"dev:debug": "DEBUG=1 uv run gradient agent run",
-		"start": "uv run gradient agent run",
+		"start": "dotenv -c -- uv run gradient agent run",
 		"lint": "uv run ruff check",
 		"lint:fix": "uv run ruff check --fix",
 		"deploy": "uv run gradient agent deploy"
