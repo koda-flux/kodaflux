@@ -90,7 +90,7 @@ Before running the setup script, ensure you have gathered the following credenti
 3. Prepare environment variable files
 
 	```bash
-	python3 scripts/setup_env_files.py
+	uv run scripts/setup_env_files.py
 	```
 
 	> The [setup_env_files.py](./scripts/setup_env_files.py) script walks the the whole repository's file structure, ignoring all files and folders included in the `.gitignore`. It finds all files named `.env.example` and creates a copies of these files to `.env`.
