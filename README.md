@@ -37,6 +37,33 @@ Additionally, you will need:
 
 - [DigitalOcean Account](https://digitalocean.com)
 - [Firecrawl Account](https://firecrawl.dev)
+- [GitHub Account](https://github.com/)
+
+## Preperation
+
+Before running the setup script, ensure you have gathered the following credentials from their respective platforms. You will need to input these into the `.env` files generated in step 3 of the Setup.
+
+1. DigitalOcean Credentials
+
+	Required for AI processing (Gradient), object storage (Spaces), and managed databases.
+
+	- Sign up at [digitalocean.com](https://digitalocean.com)
+	- `DIGITALOCEAN_API_TOKEN`: Generate a Personal Access Token with read/write access in the API section of your dashboard.
+	- `DIGITALOCEAN_SPACES_KEY_ID` & `DIGITALOCEAN_SPACES_SECRET_KEY`: Create a Spaces bucket. For ease moving forward with this guide, name the bucket `kodaflux-assets`. Then under Settings > API > Spaces Access Keys, create a key pair to programatically access the bucket (read/write). These are used for storing the generated Markdown documentation.
+	- `DIGITALOCEAN_INFERENCE_KEY`: Found in the GenAI Platform (Gradient) dashboard. This powers the agentic rewriting of the docs.
+
+2. Firecrawl API
+
+	Required for the initial "crawl" of external documentation sites.
+
+	- `FIRECRAWL_API_KEY`: Sign up at [firecrawl.dev](https://firecrawl.dev) and generate a key from your account settings.
+
+3. GitHub
+
+	Used for to increase the Github rate limits to 5000/hour.
+
+	- `GITHUB_TOKEN`:
+			Create a personal access token on github with read permission for repos.
 
 ## Setup
 
@@ -68,11 +95,13 @@ Additionally, you will need:
 
 	> The [setup_env_files.py](./scripts/setup_env_files.py) script walks the the whole repository's file structure, ignoring all files and folders included in the `.gitignore`. It finds all files named `.env.example` and creates a copies of these files to `.env`.
 
-4. Populate all variables in each of the newly created `.env` files. You will find `.env` in these packages:
+4. Populate all credentials in each of the newly created `.env` files. You will find `.env` in these packages:
 
-	- [agent](./packages/agent/.env)
-	- [backend](./packages/backend/.env)
-	- [frontend](./packages/frontend/.env)
+	| Package | Required credentials |
+	|---------|--------------------|
+	| [agent](./packages/agent/.env) | `DIGITALOCEAN_API_TOKEN`, `DIGITALOCEAN_INFERENCE_KEY`, `DIGITALOCEAN_SPACES_KEY_ID`, `DIGITALOCEAN_SPACES_SECRET_KEY`, `GITHUB_TOKEN`, `FIRECRAWL_API_KEY` |
+	| [backend](./packages/backend/.env) | `DIGITALOCEAN_API_TOKEN` |
+	| [frontend](./packages/frontend/.env) | _A default value is set in the `.env.example` |
 
 5. Build the frontend
 
